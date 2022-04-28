@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -27,10 +28,16 @@ export default function Home() {
             <p>Find in-depth information about Next.js features and API.</p>
           </a>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          {/*<a href="https://nextjs.org/learn" className={styles.card}>*/}
+          {/*  <h2>Learn &rarr;</h2>*/}
+          {/*  <p>Learn about Next.js in an interactive course with quizzes!</p>*/}
+          {/*</a>*/}
+          <h1 className="title">
+            Read{' '}
+            <Link href="/posts/first-post">
+              <a>this page!</a>
+            </Link>
+          </h1>
 
           <a
             href="https://github.com/vercel/next.js/tree/canary/examples"
