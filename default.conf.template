@@ -3,6 +3,6 @@ server {
         listen [::]:80 default_server;
 
         location / {
-            proxy_pass http://poker-community-front:3000;
+            proxy_pass ${PROXY_PASS_TO_FRONT_SERVER};
         }
 }
