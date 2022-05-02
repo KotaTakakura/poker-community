@@ -1,0 +1,17 @@
+.card_wrapper {
+    width: 48px;
+    border: solid 1px;
+    border-radius: 5px;
+    padding: 10px 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card_number {
+    width: 15px;
+}
+
+.card_suit {
+    width: 32px;
+}
