@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import styles from './Card.module.css'
+import CardImage from "../card_image/card_image";
+import CardSelector from "../card_selector/card_selector";
 
 export default function Card(props: iCard) {
-    const number_list = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
-    const suit_list = ['heart','diamond','spade','club'];
+    const [selected_card_number,setSelectedCardNumber] = useState(props.number)
+    const [selected_card_suit,setSelectedCardSuit] = useState(props.suit)
 
-    const number_color = props.suit === 'heart' || props.suit === 'diamond' ? 'red' : 'black';
-    const number_image_src = `/card_images/number/${number_color}/${props.number}.png`;
-    const suit_image_src = `/card_images/suit/${props.suit}.png`;
-    const number_image_alt = number_color + props.number;
-    const suit_image_alt = props.suit;
-
+    const changeCard = (new_card: any) => {
+        if(props.change_card === null) {
+            return;
+        }
+        props.change_card({number: selected_card_number, suit: selected_card_suit},new_card)
+        setSelectedCardNumber(new_card.number)
+        setSelectedCardSuit(new_card.suit)
+    }
     return (
-        <div className={styles.card_wrapper}>
-            <div>
-                <img src={number_image_src} alt={number_image_alt} className={styles.card_number}/>
-            </div>
-            <div>
-                <img src={suit_image_src} alt={suit_image_alt} className={styles.card_suit}/>
-            </div>
-        </div>
+        <>
+            <CardImage number={selected_card_number} suit={selected_card_suit} notify_click={null}></CardImage>
+            <CardSelector rest_of_cards={props.rest_of_cards} change_card={changeCard}></CardSelector>
+        </>
     )
 }
 
 interface iCard{
-    number: string,
-    suit: string,
+    number: string | null,
+    suit: string | null,
+    rest_of_cards: any,
+    change_card: (prev_card: any, new_card: any) => void | null
 }
