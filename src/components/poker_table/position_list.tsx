@@ -1,4 +1,4 @@
-export default {
+const position_list_array: {[key:number]: string[]} = {
     2:[
         'big_blind',
         'small_blind',
@@ -59,4 +59,8 @@ export default {
         'cut_off',
         'button',
     ],
+}
+
+export default () => {
+    return Object.assign(position_list_array)
 }
