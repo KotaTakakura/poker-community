@@ -9,14 +9,14 @@ export default function CardImage(props: iCardImage) {
 
     const is_empty_card_class = props.number === null || props.suit === null ? styles.empty : '';
     return (
-        <div className={`${styles.card_wrapper} ${is_empty_card_class}`} onClick={props.notify_click === null ? () => {} : props.notify_click}>
-            <div>
+        <div style={{width: props.width ? props.width : `24px`}} className={`${styles.card_wrapper} ${is_empty_card_class}`} onClick={props.notify_click}>
+            <div className={`${styles.card_number_wrapper}`}>
                 {
                     props.number === null || props.suit === null ?
                         <span></span> : <img src={number_image_src} alt={number_image_alt} className={styles.card_number}/>
                 }
             </div>
-            <div>
+            <div className={`${styles.card_suit_wrapper}`}>
                 {
                     props.number === null || props.suit === null ?
                         <span></span> : <img src={suit_image_src} alt={suit_image_alt} className={styles.card_suit}/>
@@ -27,7 +27,8 @@ export default function CardImage(props: iCardImage) {
 }
 
 interface iCardImage {
-    number: string | null,
-    suit: string | null,
-    notify_click: (() => void) | null,
+    number?: string,
+    suit?: string,
+    width?: string,
+    notify_click?: () => void,
 }

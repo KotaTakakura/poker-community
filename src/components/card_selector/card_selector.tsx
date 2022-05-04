@@ -7,8 +7,9 @@ export default function CardSelector(props:any) {
     const card_select_list: JSX.Element[] = [];
     for(let i = 0; i < props.rest_of_cards.length; i++){
         card_select_list.push(
-            <div>
+            <div className={styles.card_wrapper}>
                 <CardImage
+                    width={`16px`}
                     notify_click={() => {
                         props.change_card({number:props.rest_of_cards[i]['number'],suit:props.rest_of_cards[i]['suit']})
                     }}
@@ -18,8 +19,10 @@ export default function CardSelector(props:any) {
     }
 
     return (
-        <div>
-            {card_select_list}
-        </div>
+        <>
+            <div className={styles.card_selector_wrapper}>
+                {card_select_list}
+            </div>
+        </>
     )
 }

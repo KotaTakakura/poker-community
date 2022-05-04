@@ -1,0 +1,10 @@
+.card_selector_wrapper{
+    width: 240px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card_wrapper{
+    margin: 1px 4px;
+    cursor: pointer;
+}
