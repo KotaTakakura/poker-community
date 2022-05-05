@@ -10,15 +10,16 @@ import styles from './PokerTable.module.css'
 export default function PokerTable() {
     const all_card_list_copy = Array.from(all_card_list);
 
-    const [used_card_list, setUsedCardList] = useState([]);
-
     //使われていないカード一覧を作成
     const createNoDuplicateCardList = () => {
+        console.log(players_list)
         const no_duplicate_card_list = [];
         for(let i = 0; i < all_card_list_copy.length; i++){
             let duplicate_card_exist = false;
-            for(let j = 0; j < used_card_list.length; j++){
-                if (JSON.stringify(all_card_list_copy[i]) === JSON.stringify(used_card_list[j])){
+            for(const property in players_list){
+                if (players_list[property].first_card.number === all_card_list_copy[i].number && players_list[property].first_card.suit === all_card_list_copy[i].suit){
+                    duplicate_card_exist = true;
+                } else if(players_list[property].second_card.number === all_card_list_copy[i].number && players_list[property].second_card.suit === all_card_list_copy[i].suit) {
                     duplicate_card_exist = true;
                 }
             }
@@ -29,15 +30,9 @@ export default function PokerTable() {
         return no_duplicate_card_list;
     }
 
-    const [rest_of_cards, setRestOfCards] = useState(createNoDuplicateCardList());
-
-    useEffect(() => {
-        setRestOfCards(createNoDuplicateCardList());
-    },[used_card_list])
-
-    const [selected_num_of_players, setSelectedNumOfPlayers] = useState('6')
-    const [players_list, setPlayersList] = useState((() => {
-        let players: {[key:string]: {first_card: {number: string|null, suit: string|null},second_card: {number: string|null, suit: string|null}}} = {};
+    //プレーヤー一覧の作成
+    const setPlayersListCommon = () => {
+        const players: {[key:string]: {'first_card': {number: string|null, suit: string|null},'second_card': {number: string|null, suit: string|null}}} = {};
 
         for(let i = 0; i < position_list()[Number(selected_num_of_players)].length; i++){
             players[position_list()[Number(selected_num_of_players)][i]] = {
@@ -46,33 +41,25 @@ export default function PokerTable() {
             }
         }
         return players;
-    })())
-
-    useEffect(() => {
-        setPlayersList((() => {
-            let players: {[key:string]: {first_card: {number: string|null, suit: string|null},second_card: {number: string|null, suit: string|null}}} = {};
-
-            for(let i = 0; i < position_list()[Number(selected_num_of_players)].length; i++){
-                players[position_list()[Number(selected_num_of_players)][i]] = {
-                    first_card: {number: null, suit: null},
-                    second_card: {number: null, suit: null},
-                }
-            }
-            return players;
-        })())
-    },[selected_num_of_players])
-
-    //使用中のカード
-    const updateUsedCard = (prev_card: any, new_card: any) => {
-        const new_used_card_list: any = (Array.from(used_card_list)).filter(used_card => used_card.number !== prev_card.number && used_card.suit !== prev_card.suit)
-        new_used_card_list.push(new_card)
-        setUsedCardList(new_used_card_list)
     }
 
+    const [selected_num_of_players, setSelectedNumOfPlayers] = useState<string>('2')
+    const [players_list, setPlayersList] = useState(setPlayersListCommon())
+    const [rest_of_cards, setRestOfCards] = useState(createNoDuplicateCardList());
+    const [used_card_list, setUsedCardList] = useState([]);
     const [show_card_selector,setShowCardSelector] = useState(false)
-    const [position_to_change_card,setPositionToChangeCard] = useState('')
-    const [clicked_card_to_change_card,setClickedCardToChangeCard] = useState('')
+    const [position_to_change_card,setPositionToChangeCard] = useState<string>('')
+    const [clicked_card_to_change_card,setClickedCardToChangeCard] = useState<string>('')
     const [prev_card_to_change_card,setPrevCardToChangeCard] = useState({number:null, suit:null})
+    const [player_list_components,setPlayerListComponents] = useState([])
+
+    useEffect(() => {
+        setRestOfCards(createNoDuplicateCardList());
+    },[used_card_list])
+
+    useEffect(() => {
+        setPlayersList(setPlayersListCommon())
+    },[selected_num_of_players])
 
     const showCardSelector = (position: string, clicked_card: string, prev_card: {number: string|null, suit: string|null}) => {
         setShowCardSelector(true)
@@ -88,22 +75,37 @@ export default function PokerTable() {
         setPrevCardToChangeCard({number:null, suit:null})
     }
 
-    const poker_position_list_copy = position_list();
-    const player_list: JSX.Element[] = [];
-    for(let i = 0; i < Number(selected_num_of_players); i++){
-        const position = poker_position_list_copy[Number(selected_num_of_players)][i]
-        const first_card = players_list[position].first_card;
-        const second_card = players_list[position].second_card;
-
-        player_list.push(
-            <PokerPlayer
-                key={position}
-                first_card={first_card}
-                second_card={second_card}
-                position={position}
-                change_card={showCardSelector}></PokerPlayer>
-        )
+    const changeCard = (new_card: {number: string|null, suit: string|null}) => {
+        let players_list_copy: {[key:string]: {first_card: {number: string|null, suit: string|null},second_card: {number: string|null, suit: string|null}}} = {}
+        Object.assign(players_list_copy, players_list)
+        players_list_copy[position_to_change_card][clicked_card_to_change_card === 'first_card' ? 'first_card' : 'second_card'].number = new_card.number
+        players_list_copy[position_to_change_card][clicked_card_to_change_card === 'first_card' ? 'first_card' : 'second_card'].suit = new_card.suit
+        hideCardSelector()
+        setPlayersList(players_list_copy)
     }
+
+    useEffect(() => {
+        const poker_position_list_copy = position_list();
+        const player_list: JSX.Element[] = [];
+        for(let i = 0; i < Number(selected_num_of_players); i++){
+            const position = poker_position_list_copy[Number(selected_num_of_players)][i]
+            const first_card = players_list[position].first_card;
+            const second_card = players_list[position].second_card;
+
+            player_list.push(
+                <PokerPlayer
+                    key={position}
+                    first_card={first_card}
+                    second_card={second_card}
+                    position={position}
+                    change_card={showCardSelector}></PokerPlayer>
+            )
+            setPlayerListComponents(player_list)
+        }
+
+        console.log(createNoDuplicateCardList())
+        setRestOfCards(createNoDuplicateCardList());
+    },[players_list])
 
     return (
         <>
@@ -117,10 +119,14 @@ export default function PokerTable() {
                 <option value="8">8</option>
                 <option value="9">9</option>
             </select>
-            {player_list}
+            {player_list_components}
             <div className={show_card_selector ? styles.card_selector_wrapperShow : styles.card_selector_wrapper}>
-                <button onClick={hideCardSelector}>CLOSE</button>
-                <CardSelector rest_of_cards={rest_of_cards} change_card={updateUsedCard}></CardSelector>
+                <div className={styles.card_selector_overlay}>
+                    <div className={styles.card_selector_content}>
+                        <button onClick={hideCardSelector}>CLOSE</button>
+                        <CardSelector rest_of_cards={rest_of_cards} change_card={changeCard}></CardSelector>
+                    </div>
+                </div>
             </div>
         </>
     )

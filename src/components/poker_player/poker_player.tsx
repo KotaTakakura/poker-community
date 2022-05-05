@@ -8,7 +8,8 @@ export default function PokerPlayer(props: iPokerPlayer) {
     }
     return (
         <div>
-            <Hand first_card={{number: props.first_card.number, suit: props.first_card.suit}} second_card={{number: props.second_card.number, suit: props.second_card.suit}} change_card={change_card}></Hand>
+            <span>{props.position}</span>
+            <Hand first_card={props.first_card} second_card={props.second_card} change_card={change_card}></Hand>
         </div>
     )
 }

@@ -62,5 +62,6 @@ const position_list_array: {[key:number]: string[]} = {
 }
 
 export default () => {
-    return Object.assign(position_list_array)
+    const copy = {}
+    return Object.assign(copy, position_list_array)
 }

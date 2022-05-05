@@ -2,6 +2,7 @@
     width: 240px;
     display: flex;
     flex-wrap: wrap;
+    background-color: #FFFFFF;
 }
 
 .card_wrapper{

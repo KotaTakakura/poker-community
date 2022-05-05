@@ -26,3 +26,7 @@ export default function CardSelector(props:any) {
         </>
     )
 }
+
+interface iCardSelector{
+    change_card: (new_card: {number: string|null, suit: string|null}) => void
+}
